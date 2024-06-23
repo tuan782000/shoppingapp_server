@@ -255,62 +255,163 @@ const forgotPassword = asyncHandle(async (req, res) => {
   }
 });
 
+// const handleLoginWithGoogle = asyncHandle(async (req, res) => {
+//   const userInfo = req.body;
+
+//   const existingUser = await UserModel.findOne({ email: userInfo.email });
+//   let user;
+//   if (existingUser) {
+//     await UserModel.findByIdAndUpdate(existingUser.id, {
+//       updatedAt: Date.now(),
+//     });
+//     user = { ...existingUser };
+//     user.accesstoken = await getJsonWebToken(userInfo.email, userInfo.id);
+
+//     if (user) {
+//       const data = {
+//         accesstoken: user.accesstoken,
+//         id: existingUser._id,
+//         email: existingUser.email,
+//         // fcmTokens: existingUser.fcmTokens,
+//         photo: existingUser.photoUrl,
+//         name: existingUser.name,
+//       };
+
+//       res.status(200).json({
+//         message: "Login with google successfully!!!",
+//         data,
+//       });
+//     } else {
+//       res.sendStatus(401);
+//       throw new Error("fafsf");
+//     }
+//   } else {
+//     const newUser = new UserModel({
+//       email: userInfo.email,
+//       fullname: userInfo.name,
+//       ...userInfo,
+//     });
+//     await newUser.save();
+//     user = { ...newUser };
+//     user.accesstoken = await getJsonWebToken(userInfo.email, newUser.id);
+
+//     if (user) {
+//       res.status(200).json({
+//         message: "Login with google successfully!!!",
+//         data: {
+//           accesstoken: user.accesstoken,
+//           id: user._id,
+//           email: user.email,
+//           // fcmTokens: user.fcmTokens,
+//           photo: user.photoUrl,
+//           name: user.name,
+//         },
+//       });
+//     } else {
+//       res.sendStatus(401);
+//       throw new Error("fafsf");
+//     }
+//   }
+// });
+
 const handleLoginWithGoogle = asyncHandle(async (req, res) => {
-  const userInfo = req.body;
+  try {
+    const userInfo = req.body;
 
-  const existingUser = await UserModel.findOne({ email: userInfo.email });
-  let user;
-  if (existingUser) {
-    await UserModel.findByIdAndUpdate(existingUser.id, {
-      updatedAt: Date.now(),
-    });
-    user = { ...existingUser };
-    user.accesstoken = await getJsonWebToken(userInfo.email, userInfo.id);
+    const existingUser = await UserModel.findOne({ email: userInfo.email });
+    let user;
+    if (existingUser) {
+      await UserModel.findByIdAndUpdate(existingUser.id, {
+        updatedAt: Date.now(),
+      });
+      user = { ...existingUser };
+      user.accesstoken = await getJsonWebToken(userInfo.email, userInfo.id);
 
-    if (user) {
-      const data = {
-        accesstoken: user.accesstoken,
-        id: existingUser._id,
-        email: existingUser.email,
-        fcmTokens: existingUser.fcmTokens,
-        photo: existingUser.photoUrl,
-        name: existingUser.name,
+      if (user) {
+        const data = {
+          accesstoken: user.accesstoken,
+          id: existingUser._id,
+          email: existingUser.email,
+          // fcmTokens: existingUser.fcmTokens,
+          photo: existingUser.photoUrl,
+          name: existingUser.name,
+        };
+
+        res.status(200).json({
+          message: "Login with google successfully!!!",
+          data,
+        });
+      } else {
+        res.sendStatus(401);
+        throw new Error("Something went wrong");
+      }
+    } else {
+      const salt = await bcrypt.genSalt(10);
+      // viết hành gen ra password xong truyền vào 123456 để thay thế. Sau đó lấy password được gen ra thì gửi qua email cho người dùng
+
+      // Hàm generate ra nhiều password có 10 ký tự
+      const generatePassword = (length) => {
+        const allowedChars =
+          "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let password = "";
+
+        if (length < 6) {
+          return "Password length must be at least 6 characters";
+        }
+
+        for (let i = 0; i < length; i++) {
+          const randomIndex = Math.floor(Math.random() * allowedChars.length);
+          password += allowedChars[randomIndex];
+        }
+
+        return password;
       };
 
-      res.status(200).json({
-        message: "Login with google successfully!!!",
-        data,
-      });
-    } else {
-      res.sendStatus(401);
-      throw new Error("fafsf");
-    }
-  } else {
-    const newUser = new UserModel({
-      email: userInfo.email,
-      fullname: userInfo.name,
-      ...userInfo,
-    });
-    await newUser.save();
-    user = { ...newUser };
-    user.accesstoken = await getJsonWebToken(userInfo.email, newUser.id);
+      const randomPassword = generatePassword(10);
 
-    if (user) {
-      res.status(200).json({
-        message: "Login with google successfully!!!",
-        data: {
-          accesstoken: user.accesstoken,
-          id: user._id,
-          email: user.email,
-          fcmTokens: user.fcmTokens,
-          photo: user.photoUrl,
-          name: user.name,
-        },
+      // Sau đó gửi qua email cho người dùng
+
+      const dataSendToEmail = {
+        from: `"New Password" <${process.env.USERNAME_EMAIL}>`,
+        to: userInfo.email,
+        subject: "Provided password",
+        text: "You have successfully logged into the app with your Google account. This is the password we provided for your Google account. You should change your password.",
+        html: `<h1>${randomPassword}</h1>`,
+      };
+
+      // mã hoá password đó
+      const hash = await bcrypt.hash(`${randomPassword}`, salt);
+      const newUser = new UserModel({
+        email: userInfo.email,
+        fullname: userInfo.name,
+        password: hash,
+        ...userInfo,
       });
-    } else {
-      res.sendStatus(401);
-      throw new Error("fafsf");
+      await newUser.save();
+      // gửi email password tới email người dùng
+      await handleSendMail(dataSendToEmail);
+      user = { ...newUser };
+      user.accesstoken = await getJsonWebToken(userInfo.email, newUser.id);
+
+      if (user) {
+        res.status(200).json({
+          message: "Login with google successfully!!!",
+          data: {
+            accesstoken: user.accesstoken,
+            id: user._id,
+            email: user.email,
+            // fcmTokens: user.fcmTokens,
+            photo: user.photoUrl,
+            name: user.name,
+          },
+        });
+      } else {
+        res.sendStatus(401);
+        throw new Error("Something went wrong");
+      }
     }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
