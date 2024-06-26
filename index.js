@@ -1,34 +1,36 @@
 /** @format */
-const express = require('express');
-const cors = require('cors');
-const authRouter = require('./src/routers/authRouter');
-const connectDB = require('./src/configs/connectDb');
-const errorMiddleHandle = require('./src/middlewares/errorMiddleware');
-const userRouter = require('./src/routers/userRouter');
-const verifyToken = require('./src/middlewares/verifyMiddleware');
-const eventRouter = require('./src/routers/eventRouter');
+const express = require("express");
+const cors = require("cors");
+const authRouter = require("./src/routers/authRouter");
+const connectDB = require("./src/configs/connectDb");
+const errorMiddleHandle = require("./src/middlewares/errorMiddleware");
+const userRouter = require("./src/routers/userRouter");
+const verifyToken = require("./src/middlewares/verifyMiddleware");
+const eventRouter = require("./src/routers/eventRouter");
+const productRouter = require("./src/routers/productRouter");
 const app = express();
 
-require('dotenv').config();
+require("dotenv").config();
 
 app.use(cors());
 app.use(express.json());
 
 const PORT = 3001;
 
-app.use('/auth', authRouter);
-app.use('/events', verifyToken, eventRouter);
-app.use('/users', verifyToken, userRouter);
+app.use("/auth", authRouter);
+app.use("/events", verifyToken, eventRouter);
+app.use("/users", verifyToken, userRouter);
+app.use("/products", productRouter);
 
 connectDB();
 
 app.use(errorMiddleHandle);
 
 app.listen(PORT, (err) => {
-	if (err) {
-		console.log(err);
-		return;
-	}
+  if (err) {
+    console.log(err);
+    return;
+  }
 
-	console.log(`Server starting at http://localhost:${PORT}`);
+  console.log(`Server starting at http://localhost:${PORT}`);
 });
