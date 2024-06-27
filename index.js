@@ -8,6 +8,8 @@ const userRouter = require("./src/routers/userRouter");
 const verifyToken = require("./src/middlewares/verifyMiddleware");
 const eventRouter = require("./src/routers/eventRouter");
 const productRouter = require("./src/routers/productRouter");
+const brandRouter = require("./src/routers/brandRouter");
+const categoryRouter = require("./src/routers/categoryRouter");
 const app = express();
 
 require("dotenv").config();
@@ -21,6 +23,8 @@ app.use("/auth", authRouter);
 app.use("/events", verifyToken, eventRouter);
 app.use("/users", verifyToken, userRouter);
 app.use("/products", productRouter);
+app.use("/brands", brandRouter);
+app.use("/categories", categoryRouter);
 
 connectDB();
 
