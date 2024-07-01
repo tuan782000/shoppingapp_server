@@ -5,11 +5,10 @@ const BrandSchema = mongoose.Schema({
     type: String,
     require: true,
   },
-  key: {
+  description: {
     type: String,
-    require: true,
   },
-  imgae: {
+  imageURL: {
     type: String,
   },
   createdAt: {

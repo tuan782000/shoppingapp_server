@@ -15,6 +15,24 @@ const getCategories = async (req, res) => {
   }
 };
 
+const getCategoryWithId = async (req, res) => {
+  const { id } = req.params;
+
+  // console.log(id);
+  try {
+    const category = await CategoryModel.findById(id);
+
+    res.status(200).json({
+      message: "Get category successfully",
+      data: category,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
 const addCategory = async (req, res) => {
   const body = req.body;
   try {
@@ -25,6 +43,34 @@ const addCategory = async (req, res) => {
     res.status(201).json({
       message: "Add category successfully",
       data: category,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
+const editCategory = async (req, res) => {
+  const { id } = req.params;
+  const dataUpdated = req.body;
+
+  try {
+    const categoryUpdated = await CategoryModel.findOneAndUpdate(
+      { _id: id },
+      dataUpdated,
+      { new: true }
+    );
+
+    if (!categoryUpdated) {
+      return res.status(404).json({
+        message: "Category not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Updated category successfully",
+      data: categoryUpdated,
     });
   } catch (error) {
     res.status(400).json({
@@ -51,6 +97,8 @@ const removeCategory = async (req, res) => {
 
 module.exports = {
   getCategories,
+  getCategoryWithId,
   addCategory,
+  editCategory,
   removeCategory,
 };

@@ -15,6 +15,24 @@ const getProducts = async (req, res) => {
   }
 };
 
+const getProductWithId = async (req, res) => {
+  const { id } = req.params;
+
+  // console.log(id);
+  try {
+    const product = await ProductModel.findById(id);
+
+    res.status(200).json({
+      message: "Get product successfully",
+      data: product,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
 const addProduct = async (req, res) => {
   const body = req.body;
   try {
@@ -25,6 +43,34 @@ const addProduct = async (req, res) => {
     res.status(201).json({
       message: "Add product successfully",
       data: product,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
+const editProduct = async (req, res) => {
+  const { id } = req.params;
+  const dataUpdated = req.body;
+
+  try {
+    const productUpdated = await ProductModel.findOneAndUpdate(
+      { _id: id },
+      dataUpdated,
+      { new: true }
+    );
+
+    if (!productUpdated) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Updated product successfully",
+      data: productUpdated,
     });
   } catch (error) {
     res.status(400).json({
@@ -51,6 +97,8 @@ const removeProduct = async (req, res) => {
 
 module.exports = {
   getProducts,
+  getProductWithId,
   addProduct,
+  editProduct,
   removeProduct,
 };

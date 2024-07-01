@@ -14,7 +14,7 @@ const ProductSchema = mongoose.Schema({
     type: String,
   },
   // Image chỉ lưu đường dẫn - image sẽ lưu vào bên thứ 3 trả về link lưu vào
-  image: {
+  imageURL: {
     require: true,
     type: String,
   },

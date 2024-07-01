@@ -38,7 +38,7 @@ const CategorySchema = mongoose.Schema({
   title: {
     type: String,
   },
-  key: {
+  description: {
     type: String,
   },
   createdAt: {
