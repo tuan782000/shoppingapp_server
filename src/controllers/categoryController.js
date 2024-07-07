@@ -51,15 +51,17 @@ const addCategory = async (req, res) => {
   }
 };
 
+// nhiều cái dùng query
+// một cái nên dùng params
+
 const editCategory = async (req, res) => {
   const { id } = req.params;
   const dataUpdated = req.body;
 
   try {
-    const categoryUpdated = await CategoryModel.findOneAndUpdate(
-      { _id: id },
-      dataUpdated,
-      { new: true }
+    const categoryUpdated = await CategoryModel.findByIdAndUpdate(
+      id,
+      dataUpdated
     );
 
     if (!categoryUpdated) {

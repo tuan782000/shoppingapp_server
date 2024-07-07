@@ -56,11 +56,7 @@ const editBrand = async (req, res) => {
   const dataUpdated = req.body;
 
   try {
-    const brandUpdated = await BrandModel.findOneAndUpdate(
-      { _id: id },
-      dataUpdated,
-      { new: true }
-    );
+    const brandUpdated = await BrandModel.findByIdAndUpdate(id, dataUpdated);
 
     if (!brandUpdated) {
       return res.status(404).json({

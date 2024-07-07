@@ -13,6 +13,8 @@ const ProductSchema = mongoose.Schema({
     require: true,
     type: String,
   },
+  categories: [String],
+  brands: String,
   // Image chỉ lưu đường dẫn - image sẽ lưu vào bên thứ 3 trả về link lưu vào
   imageURL: {
     require: true,
@@ -22,6 +24,10 @@ const ProductSchema = mongoose.Schema({
   sizes: [String], // mảng danh sách size
   likedBys: [String], // mảng danh sách các người đã like - chứa đoạn text "id" của những người đã thích sản phẩm
   quantity: Number,
+  views: {
+    type: Number,
+    default: 0,
+  },
   createdAt: {
     type: Date,
     default: Date.now(),

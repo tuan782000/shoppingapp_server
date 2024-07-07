@@ -5,6 +5,9 @@ const {
   removeProduct,
   editProduct,
   getProductWithId,
+  getProductSizes,
+  getProductPrices,
+  filterProducts,
 } = require("../controllers/productController");
 
 const productRouter = Router();
@@ -14,5 +17,8 @@ productRouter.get("/detail-product/:id", getProductWithId);
 productRouter.post("/add-product", addProduct);
 productRouter.put("/update-product/:id", editProduct);
 productRouter.delete("/remove-product", removeProduct);
+productRouter.get("/get-product-sizes", getProductSizes);
+productRouter.get("/get-product-prices", getProductPrices);
+productRouter.post("/filter-products", filterProducts);
 
 module.exports = productRouter;
