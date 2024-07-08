@@ -15,8 +15,8 @@ const getProducts = async (req, res) => {
     }
   }
 
-  console.log(sortby, id);
-  console.log(filter);
+  // console.log(sortby, id);
+  // console.log(filter);
 
   try {
     const products = await ProductModel.find(filter).limit(limit ?? ""); // nếu có limit truyền vào đây không thì chuỗi rỗng
@@ -197,7 +197,11 @@ const filterProducts = async (req, res) => {
   const sizesSelected = body.sizesSelected || [];
 
   let filter = {
-    price: { $gte: body.price.min, $lte: body.price.max },
+    // price: { $gte: body.price.min, $lte: body.price.max },
+    $and: [
+      { price: { $gte: body.price.min } },
+      { price: { $lte: body.price.max } },
+    ],
   };
 
   if (categoriesSelected.length > 0) {
