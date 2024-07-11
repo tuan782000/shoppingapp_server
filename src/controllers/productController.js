@@ -195,14 +195,25 @@ const filterProducts = async (req, res) => {
 
   const categoriesSelected = body.categoriesSelected || [];
   const sizesSelected = body.sizesSelected || [];
+  const price = body.price || {};
 
-  let filter = {
-    // price: { $gte: body.price.min, $lte: body.price.max },
+  let filter = {};
+
+  /*
+  // price: { $gte: body.price.min, $lte: body.price.max },
     $and: [
       { price: { $gte: body.price.min } },
       { price: { $lte: body.price.max } },
     ],
-  };
+  */
+
+  // Chỉ thêm bộ lọc giá nếu min và max không bằng 0
+  if (price.min !== 0 || price.max !== 0) {
+    filter.$and = [
+      { price: { $gte: price.min } },
+      { price: { $lte: price.max } },
+    ];
+  }
 
   if (categoriesSelected.length > 0) {
     filter.categories = { $in: categoriesSelected };
@@ -215,10 +226,33 @@ const filterProducts = async (req, res) => {
   try {
     const items = await ProductModel.find(filter);
 
-    // console.log(items);
+    console.log(items);
     res.status(200).json({
       message: "Get list products successfully",
       data: items,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
+const getProductFavourites = async (req, res) => {
+  const listIdProductFavourites = req.body;
+  console.log(listIdProductFavourites);
+
+  try {
+    const listProducts = await ProductModel.find();
+
+    const favouriteProducts = listProducts.filter((product) =>
+      listIdProductFavourites.includes(product._id.toString())
+    );
+    console.log(favouriteProducts);
+
+    res.status(201).json({
+      message: "Get price all products successfully",
+      data: favouriteProducts,
     });
   } catch (error) {
     res.status(400).json({
@@ -236,4 +270,5 @@ module.exports = {
   getProductSizes,
   getProductPrices,
   filterProducts,
+  getProductFavourites,
 };

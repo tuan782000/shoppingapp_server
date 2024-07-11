@@ -8,6 +8,7 @@ const {
   getProductSizes,
   getProductPrices,
   filterProducts,
+  getProductFavourites,
 } = require("../controllers/productController");
 
 const productRouter = Router();
@@ -20,5 +21,6 @@ productRouter.delete("/remove-product", removeProduct);
 productRouter.get("/get-product-sizes", getProductSizes);
 productRouter.get("/get-product-prices", getProductPrices);
 productRouter.post("/filter-products", filterProducts);
+productRouter.post("/get-product-favourites", getProductFavourites);
 
 module.exports = productRouter;
