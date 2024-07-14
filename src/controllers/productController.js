@@ -251,7 +251,7 @@ const getProductFavourites = async (req, res) => {
     console.log(favouriteProducts);
 
     res.status(201).json({
-      message: "Get price all products successfully",
+      message: "Get list favourite products successfully",
       data: favouriteProducts,
     });
   } catch (error) {

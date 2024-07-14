@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 
-const ProductSchema = mongoose.Schema({
+const ProductSchema = new mongoose.Schema({
   title: {
     require: true,
     type: String,
@@ -28,6 +28,7 @@ const ProductSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  slug: String,
   createdAt: {
     type: Date,
     default: Date.now(),

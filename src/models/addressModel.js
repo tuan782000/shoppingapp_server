@@ -1,16 +1,15 @@
 const { default: mongoose } = require("mongoose");
 
-const BrandSchema = new mongoose.Schema({
-  title: {
-    type: String,
+const AddressSchema = new mongoose.Schema({
+  address: {
     require: true,
-  },
-  description: {
     type: String,
   },
-  imageURL: {
+  uid: {
+    require: true,
     type: String,
   },
+  checked: Boolean,
   createdAt: {
     type: Date,
     default: Date.now(),
@@ -21,5 +20,5 @@ const BrandSchema = new mongoose.Schema({
   },
 });
 
-const BrandModel = mongoose.model("brands", BrandSchema);
-module.exports = BrandModel;
+const AddressModel = mongoose.model("addresses", AddressSchema);
+module.exports = AddressModel;

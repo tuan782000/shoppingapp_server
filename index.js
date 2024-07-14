@@ -11,6 +11,8 @@ const productRouter = require("./src/routers/productRouter");
 const brandRouter = require("./src/routers/brandRouter");
 const categoryRouter = require("./src/routers/categoryRouter");
 const profileRouter = require("./src/routers/profileRouter");
+const addressRouter = require("./src/routers/addressRouter");
+const promoCodeRouter = require("./src/routers/promoCodeRouter");
 const app = express();
 
 require("dotenv").config();
@@ -28,6 +30,8 @@ app.use("/brands", brandRouter);
 app.use("/categories", categoryRouter);
 // app.use("/search", searchRouter);
 app.use("/profiles", profileRouter);
+app.use("/addresses", addressRouter);
+app.use("/promoCodes", promoCodeRouter);
 
 connectDB();
 
