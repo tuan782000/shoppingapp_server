@@ -2,7 +2,7 @@ const ProductModel = require("../models/productModel");
 
 const getProducts = async (req, res) => {
   // coi xem có limit và sort gửi kèm không
-  const { limit, sort, sortby, id } = req.query;
+  const { limit, sort, sortby, id, title } = req.query;
 
   let filter = {};
 
@@ -13,6 +13,10 @@ const getProducts = async (req, res) => {
       filter = { categories: { $in: id } };
     } else {
     }
+  }
+
+  if (title) {
+    filter.slug = { $regex: title };
   }
 
   // console.log(sortby, id);

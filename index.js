@@ -13,6 +13,7 @@ const categoryRouter = require("./src/routers/categoryRouter");
 const profileRouter = require("./src/routers/profileRouter");
 const addressRouter = require("./src/routers/addressRouter");
 const promoCodeRouter = require("./src/routers/promoCodeRouter");
+const searchRouter = require("./src/routers/searchRouter");
 const app = express();
 
 require("dotenv").config();
@@ -32,6 +33,7 @@ app.use("/categories", categoryRouter);
 app.use("/profiles", profileRouter);
 app.use("/addresses", addressRouter);
 app.use("/promoCodes", promoCodeRouter);
+app.use("/searches", searchRouter);
 
 connectDB();
 

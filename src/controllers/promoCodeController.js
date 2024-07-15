@@ -54,13 +54,17 @@ const addNewPromoCode = async (req, res) => {
 const updatePromoCode = async (req, res) => {
   const { id } = req.params;
   const dataPromoCodeUpdate = req.body;
-  //   console.log(body);
+  // console.log(dataPromoCodeUpdate);
 
   try {
+    console.log(dataPromoCodeUpdate);
     const promoCodeUpdated = await PromoCodeModel.findByIdAndUpdate(
       id,
       dataPromoCodeUpdate
     );
+
+    console.log(dataPromoCodeUpdate);
+    console.log(promoCodeUpdated);
 
     if (!promoCodeUpdated) {
       res.status(404).json({
@@ -70,7 +74,7 @@ const updatePromoCode = async (req, res) => {
 
     res.status(200).json({
       message: "Updated PromoCode Successfully",
-      data: dataPromoCodeUpdate,
+      data: promoCodeUpdated,
     });
   } catch (error) {
     res.status(400).json({
